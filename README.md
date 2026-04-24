@@ -1,6 +1,6 @@
 <div align="center">
 
-![Politeknik Negeri Tanah Laut Logo](public/logo.webp)
+<img src="public/logo.webp" alt="Politeknik Negeri Tanah Laut Logo" width="200" />
 
 # Promo Politala
 
