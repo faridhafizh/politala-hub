@@ -14,10 +14,12 @@ export default function RootLayout({ children }) {
     <html lang="id" suppressHydrationWarning>
       <body>
         <Providers>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <Chatbot />
+          <div className="page-wrapper">
+            <Navbar />
+            <main className="main-content">{children}</main>
+            <Footer />
+            <Chatbot />
+          </div>
         </Providers>
       </body>
     </html>

@@ -13,13 +13,16 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-
+  // Scroll listener – add/remove "scrolled" class
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", h);
-    // Workaround to avoid eslint error for simple mounted state
-    setTimeout(() => setMounted(true), 0);
-    return () => window.removeEventListener("scroll", h);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Flag to avoid hydration mismatch with theme icon
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   const navLinks = [
@@ -36,72 +39,103 @@ export default function Navbar() {
     setOpen(false);
   };
 
-  const isActive = (path) => pathname === path || (path !== "/" && pathname.startsWith(path));
+  const isActive = (path) =>
+    pathname === path || (path !== "/" && pathname.startsWith(path));
 
   return (
     <>
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, background: scrolled ? "var(--nav-bg-scrolled)" : "var(--nav-bg)", backdropFilter: "blur(12px)", borderBottom: scrolled ? "1px solid var(--nav-border)" : "1px solid transparent", transition: "all 0.3s", boxShadow: scrolled ? "0 2px 20px rgba(0,0,0,0.1)" : "none" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", height: 68, gap: 32 }}>
-          <div onClick={() => navigate("/")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}>
-            <Image src="/logo.webp" alt="Logo" width={44} height={44} style={{ borderRadius: 12 }} />
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: "var(--foreground)", lineHeight: 1.1 }}>Politeknik Negeri</div>
-              <div style={{ fontSize: 11, color: "#2563eb", fontWeight: 700, letterSpacing: "0.05em" }}>TANAH LAUT</div>
+      <nav className={`navbar${scrolled ? " scrolled" : ""}`}>
+        <div className="navbar-container">
+          {/* Logo */}
+          <div
+            className="navbar-logo"
+            onClick={() => navigate("/")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && navigate("/")}
+          >
+            <Image
+              src="/logo.webp"
+              alt="Logo"
+              width={44}
+              height={44}
+              className="logo-image"
+            />
+            <div className="logo-text">
+              <div className="logo-name">Politeknik Negeri</div>
+              <div className="logo-campus">TANAH LAUT</div>
             </div>
           </div>
 
-          <div className="desktop-links" style={{ display: "flex", gap: 2, flex: 1, justifyContent: "center" }}>
-            {navLinks.map(l => (
-              <button key={l.path} onClick={() => navigate(l.path)} style={{ background: isActive(l.path) ? "var(--primary-light)" : "transparent", color: isActive(l.path) ? "#2563eb" : "var(--text-dark)", border: "none", borderRadius: 8, padding: "8px 14px", fontSize: 14, fontWeight: isActive(l.path) ? 700 : 500, cursor: "pointer", transition: "all 0.2s", fontFamily: "inherit" }}>
+          {/* Desktop links */}
+          <div className="navbar-links">
+            {navLinks.map((l) => (
+              <button
+                key={l.path}
+                onClick={() => navigate(l.path)}
+                className={`nav-link${isActive(l.path) ? " active" : ""}`}
+              >
                 {l.label}
               </button>
             ))}
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          {/* Right actions */}
+          <div className="navbar-actions">
+            {/* Theme toggle */}
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "var(--foreground)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "8px",
-                  borderRadius: "50%",
-                  transition: "background 0.2s",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "var(--btn-hover)")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                className="theme-toggle"
                 aria-label="Toggle Dark Mode"
               >
-                {theme === "dark" ? <Icon name="sun" size={20} /> : <Icon name="moon" size={20} />}
+                {theme === "dark" ? (
+                  <Icon name="sun" size={20} />
+                ) : (
+                  <Icon name="moon" size={20} />
+                )}
               </button>
             )}
 
-            <button onClick={() => navigate("/daftar")} style={{ background: "linear-gradient(135deg, #1e40af, #2563eb)", color: "#fff", border: "none", borderRadius: 10, padding: "10px 20px", fontSize: 14, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "inherit", boxShadow: "0 4px 12px #2563eb40" }}>
+            {/* CTA button – reuse the generic .btn .btn-primary if you have it, or use a dedicated class */}
+            <button
+              onClick={() => navigate("/daftar")}
+              className="navbar-cta"
+            >
               Daftar Sekarang
             </button>
           </div>
 
-          <button onClick={() => setOpen(!open)} className="mobile-menu-btn" style={{ display: "none", background: "none", border: "none", cursor: "pointer", color: "#374151", padding: 4 }}>
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setOpen(!open)}
+            className="mobile-menu-btn"
+            aria-label={open ? "Tutup menu" : "Buka menu"}
+          >
             <Icon name={open ? "x" : "menu"} size={24} />
           </button>
         </div>
       </nav>
 
+      {/* Mobile overlay */}
       {open && (
-        <div style={{ position: "fixed", top: 68, left: 0, right: 0, bottom: 0, zIndex: 999, background: "#fff", padding: 24, display: "flex", flexDirection: "column", gap: 8 }}>
-          {navLinks.map(l => (
-            <button key={l.path} onClick={() => navigate(l.path)} style={{ background: isActive(l.path) ? "var(--primary-light)" : "transparent", color: isActive(l.path) ? "#2563eb" : "var(--text-dark)", border: "none", borderRadius: 12, padding: "14px 20px", fontSize: 16, fontWeight: 600, cursor: "pointer", textAlign: "left", fontFamily: "inherit" }}>
+        <div className="mobile-menu">
+          {navLinks.map((l) => (
+            <button
+              key={l.path}
+              onClick={() => navigate(l.path)}
+              className={`mobile-nav-link${isActive(l.path) ? " active" : ""}`}
+            >
               {l.label}
             </button>
           ))}
-          <div style={{ marginTop: 16 }}>
-            <button onClick={() => navigate("/daftar")} style={{ background: "linear-gradient(135deg, #1e40af, #2563eb)", color: "#fff", border: "none", borderRadius: 10, padding: "13px 28px", fontSize: 15, fontWeight: 600, cursor: "pointer", width: "100%", fontFamily: "inherit" }}>Daftar Sekarang</button>
+          <div className="mt-4">
+            <button
+              onClick={() => navigate("/daftar")}
+              className="navbar-cta w-full"
+            >
+              Daftar Sekarang
+            </button>
           </div>
         </div>
       )}

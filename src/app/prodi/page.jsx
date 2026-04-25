@@ -1,35 +1,61 @@
+"use client";
+import { useRouter } from "next/navigation";
 import { SectionHeader, Card, Badge } from "@/components/ui";
 import { PRODI } from "@/lib/data";
 
 export default function ProdiPage() {
-  return (
-    <div style={{ padding: "96px 24px", maxWidth: 1200, margin: "0 auto" }}>
-      <SectionHeader
-        badge="Program Studi"
-        title="Pilih Program Studi yang Sesuai"
-        subtitle="Kami menawarkan enam program studi vokasi unggulan yang dirancang untuk menjawab kebutuhan industri dan masyarakat." 
-      />
+  const router = useRouter();
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 }}>
-        {PRODI.map((prodi) => (
-          <Card key={prodi.id} style={{ padding: 28 }}>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 18 }}>
-              <div style={{ width: 56, height: 56, borderRadius: 18, background: prodi.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28 }}>{prodi.icon}</div>
-              <div>
-                <Badge color={prodi.color}>{prodi.jenjang}</Badge>
-                <h3 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", marginTop: 10 }}>{prodi.nama}</h3>
+  const handleDetail = (id) => {
+    // TODO: implementasi detail program studi, misalnya /prodi/[id]
+    router.push(`/prodi/${id}`);
+  };
+
+  return (
+    <section className="section page-prodi">
+      <div className="container">
+        <SectionHeader
+          badge="Program Studi"
+          title="Pilih Program Studi yang Sesuai"
+          subtitle="Kami menawarkan enam program studi vokasi unggulan yang dirancang untuk menjawab kebutuhan industri dan masyarakat."
+        />
+
+        <div className="prodi-grid">
+          {PRODI.map((prodi) => (
+            <Card key={prodi.id} className="prodi-card">
+              <div className="prodi-card-header">
+                <div
+                  className="prodi-card-icon"
+                  style={{
+                    backgroundColor: prodi.color + "22",
+                    color: prodi.color,
+                  }}
+                >
+                  {prodi.icon}
+                </div>
+                <div>
+                  <Badge color={prodi.color}>{prodi.jenjang}</Badge>
+                  <h3 className="prodi-card-title">{prodi.nama}</h3>
+                </div>
               </div>
-            </div>
-            <p style={{ color: "#475569", lineHeight: 1.75, marginBottom: 20 }}>{prodi.deskripsi}</p>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-              <span style={{ color: "#64748b", fontSize: 14 }}>👨‍🎓 {prodi.students} Mahasiswa aktif</span>
-              <button style={{ background: "transparent", border: "none", color: "#2563eb", fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
-                Pelajari lebih lanjut →
-              </button>
-            </div>
-          </Card>
-        ))}
+
+              <p className="prodi-card-desc">{prodi.deskripsi}</p>
+
+              <div className="prodi-card-footer">
+                <span className="prodi-card-stats">
+                  👨‍🎓 {prodi.students} Mahasiswa aktif
+                </span>
+                <button
+                  onClick={() => handleDetail(prodi.id)}
+                  className="prodi-card-link"
+                >
+                  Pelajari lebih lanjut →
+                </button>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
