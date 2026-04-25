@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Chatbot from "@/components/Chatbot";
 import "./globals.css";
+import { Providers } from "./providers";
 
 export const metadata = {
   title: "Politeknik Negeri Tanah Laut",
@@ -10,12 +11,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <body>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <Chatbot />
+        <Providers>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <Chatbot />
+        </Providers>
       </body>
     </html>
   );
