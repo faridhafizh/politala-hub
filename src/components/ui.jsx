@@ -13,6 +13,8 @@ export const Icon = ({ name, size = 20 }) => {
     mapPin: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
     arrowRight: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>,
     check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20,6 9,17 4,12"/></svg>,
+    sun: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
+    moon: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
     home: "🏠", about: "ℹ️", prodi: "📚", news: "📰", gallery: "🖼️", register: "📝", contact: "📞",
   };
   return icons[name] || null;
@@ -39,34 +41,34 @@ export const Button = ({ children, variant = "primary", onClick, type = "button"
 };
 
 export const Card = ({ children, style = {}, hover = true, onClick }) => (
-  <div onClick={onClick} style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #0000000a", border: "1px solid #f1f5f9", overflow: "hidden", transition: hover ? "all 0.3s" : "none", cursor: onClick ? "pointer" : "default", ...style }}
-    onMouseEnter={e => hover && (e.currentTarget.style.transform = "translateY(-4px)", e.currentTarget.style.boxShadow = "0 12px 32px #00000015")}
-    onMouseLeave={e => hover && (e.currentTarget.style.transform = "none", e.currentTarget.style.boxShadow = "0 2px 12px #0000000a")}>
+  <div className="card" onClick={onClick} style={{ background: "var(--card-bg)", borderRadius: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.04)", border: "1px solid var(--card-border)", overflow: "hidden", transition: hover ? "all 0.3s" : "none", cursor: onClick ? "pointer" : "default", color: "var(--foreground)", ...style }}
+    onMouseEnter={e => hover && (e.currentTarget.style.transform = "translateY(-4px)", e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.08)")}
+    onMouseLeave={e => hover && (e.currentTarget.style.transform = "none", e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)")}>
     {children}
   </div>
 );
 
 export const Input = ({ label, type = "text", placeholder, value, onChange, required, name }) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-    <label style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>{label} {required && <span style={{ color: "#ef4444" }}>*</span>}</label>
+    <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text-dark)" }}>{label} {required && <span style={{ color: "#ef4444" }}>*</span>}</label>
     {type === "textarea" ? (
       <textarea name={name} placeholder={placeholder} value={value} onChange={onChange} required={required} rows={4}
-        style={{ border: "1.5px solid #e2e8f0", borderRadius: 10, padding: "11px 14px", fontSize: 14, fontFamily: "inherit", outline: "none", resize: "vertical", transition: "border 0.2s" }}
+        style={{ border: "1.5px solid var(--input-border)", borderRadius: 10, padding: "11px 14px", fontSize: 14, fontFamily: "inherit", outline: "none", resize: "vertical", transition: "border 0.2s", background: "var(--background)", color: "var(--foreground)" }}
         onFocus={e => e.target.style.borderColor = "#2563eb"}
-        onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+        onBlur={e => e.target.style.borderColor = "var(--input-border)"} />
     ) : type === "select" ? (
       <select name={name} value={value} onChange={onChange} required={required}
-        style={{ border: "1.5px solid #e2e8f0", borderRadius: 10, padding: "11px 14px", fontSize: 14, fontFamily: "inherit", outline: "none", background: "#fff", cursor: "pointer" }}
+        style={{ border: "1.5px solid var(--input-border)", borderRadius: 10, padding: "11px 14px", fontSize: 14, fontFamily: "inherit", outline: "none", background: "var(--background)", color: "var(--foreground)", cursor: "pointer" }}
         onFocus={e => e.target.style.borderColor = "#2563eb"}
-        onBlur={e => e.target.style.borderColor = "#e2e8f0"}>
+        onBlur={e => e.target.style.borderColor = "var(--input-border)"}>
         <option value="">-- Pilih Program Studi --</option>
         {PRODI.map(p => <option key={p.id} value={p.id}>{p.nama} ({p.jenjang})</option>)}
       </select>
     ) : (
       <input type={type} name={name} placeholder={placeholder} value={value} onChange={onChange} required={required}
-        style={{ border: "1.5px solid #e2e8f0", borderRadius: 10, padding: "11px 14px", fontSize: 14, fontFamily: "inherit", outline: "none", transition: "border 0.2s" }}
+        style={{ border: "1.5px solid var(--input-border)", borderRadius: 10, padding: "11px 14px", fontSize: 14, fontFamily: "inherit", outline: "none", transition: "border 0.2s", background: "var(--background)", color: "var(--foreground)" }}
         onFocus={e => e.target.style.borderColor = "#2563eb"}
-        onBlur={e => e.target.style.borderColor = "#e2e8f0"} />
+        onBlur={e => e.target.style.borderColor = "var(--input-border)"} />
     )}
   </div>
 );
@@ -74,7 +76,7 @@ export const Input = ({ label, type = "text", placeholder, value, onChange, requ
 export const SectionHeader = ({ badge, title, subtitle, center = true }) => (
   <div style={{ textAlign: center ? "center" : "left", marginBottom: 48 }}>
     {badge && <div style={{ marginBottom: 12 }}><Badge>{badge}</Badge></div>}
-    <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "#0f172a", lineHeight: 1.2, marginBottom: 16 }}>{title}</h2>
-    {subtitle && <p style={{ color: "#64748b", fontSize: 17, maxWidth: 580, margin: center ? "0 auto" : "0", lineHeight: 1.7 }}>{subtitle}</p>}
+    <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 800, color: "var(--foreground)", lineHeight: 1.2, marginBottom: 16 }}>{title}</h2>
+    {subtitle && <p style={{ color: "var(--text-muted)", fontSize: 17, maxWidth: 580, margin: center ? "0 auto" : "0", lineHeight: 1.7 }}>{subtitle}</p>}
   </div>
 );

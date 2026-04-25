@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { PRODI } from "@/lib/data";
 
 export default function Footer() {
@@ -12,7 +13,9 @@ export default function Footer() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 48, marginBottom: 48 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg, #1e40af, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>🎓</div>
+              <div style={{ position: "relative", width: 44, height: 44 }}>
+                <Image src="/logo.webp" alt="Logo" width={44} height={44} style={{ borderRadius: 12 }} />
+              </div>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 800, color: "#f1f5f9" }}>Politeknik Negeri</div>
                 <div style={{ fontSize: 11, color: "#3b82f6", fontWeight: 700 }}>TANAH LAUT</div>
