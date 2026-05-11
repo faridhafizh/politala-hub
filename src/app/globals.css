@@ -535,6 +535,7 @@ section {
   align-items: center;
   gap: 12px;
   user-select: none;
+  text-decoration: none;
 }
 
 .logo-image {
@@ -577,6 +578,7 @@ section {
   cursor: pointer;
   transition: all 0.2s;
   font-family: inherit;
+  text-decoration: none;
 }
 
 .nav-link:hover {
@@ -628,6 +630,7 @@ section {
   font-family: inherit;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
   transition: filter 0.2s, box-shadow 0.2s;
+  text-decoration: none;
 }
 
 .navbar-cta:hover {
@@ -638,6 +641,8 @@ section {
 /* Utility: full width button (used in mobile menu) */
 .w-full {
   width: 100%;
+  display: block;
+  text-align: center;
 }
 
 /* ── Mobile menu button ── */
@@ -677,6 +682,7 @@ section {
   text-align: left;
   font-family: inherit;
   transition: background 0.2s;
+  text-decoration: none;
 }
 
 .mobile-nav-link:hover {
