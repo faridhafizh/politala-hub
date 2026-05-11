@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Icon } from "./ui";
 
@@ -11,7 +12,6 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   // Scroll listener – add/remove "scrolled" class
   useEffect(() => {
@@ -22,6 +22,7 @@ export default function Navbar() {
 
   // Flag to avoid hydration mismatch with theme icon
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -34,11 +35,6 @@ export default function Navbar() {
     { path: "/kontak", label: "Kontak" },
   ];
 
-  const navigate = (path) => {
-    router.push(path);
-    setOpen(false);
-  };
-
   const isActive = (path) =>
     pathname === path || (path !== "/" && pathname.startsWith(path));
 
@@ -47,13 +43,7 @@ export default function Navbar() {
       <nav className={`navbar${scrolled ? " scrolled" : ""}`}>
         <div className="navbar-container">
           {/* Logo */}
-          <div
-            className="navbar-logo"
-            onClick={() => navigate("/")}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && navigate("/")}
-          >
+          <Link href="/" className="navbar-logo">
             <Image
               src="/logo.webp"
               alt="Logo"
@@ -65,18 +55,18 @@ export default function Navbar() {
               <div className="logo-name">Politeknik Negeri</div>
               <div className="logo-campus">TANAH LAUT</div>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop links */}
           <div className="navbar-links">
             {navLinks.map((l) => (
-              <button
+              <Link
                 key={l.path}
-                onClick={() => navigate(l.path)}
+                href={l.path}
                 className={`nav-link${isActive(l.path) ? " active" : ""}`}
               >
                 {l.label}
-              </button>
+              </Link>
             ))}
           </div>
 
@@ -98,12 +88,12 @@ export default function Navbar() {
             )}
 
             {/* CTA button – reuse the generic .btn .btn-primary if you have it, or use a dedicated class */}
-            <button
-              onClick={() => navigate("/daftar")}
+            <Link
+              href="/daftar"
               className="navbar-cta"
             >
               Daftar Sekarang
-            </button>
+            </Link>
           </div>
 
           {/* Mobile menu toggle */}
@@ -121,21 +111,23 @@ export default function Navbar() {
       {open && (
         <div className="mobile-menu">
           {navLinks.map((l) => (
-            <button
+            <Link
               key={l.path}
-              onClick={() => navigate(l.path)}
+              href={l.path}
+              onClick={() => setOpen(false)}
               className={`mobile-nav-link${isActive(l.path) ? " active" : ""}`}
             >
               {l.label}
-            </button>
+            </Link>
           ))}
           <div className="mt-4">
-            <button
-              onClick={() => navigate("/daftar")}
+            <Link
+              href="/daftar"
+              onClick={() => setOpen(false)}
               className="navbar-cta w-full"
             >
               Daftar Sekarang
-            </button>
+            </Link>
           </div>
         </div>
       )}
