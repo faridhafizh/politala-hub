@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 
 const initialMessages = [
   {
@@ -64,38 +64,47 @@ export default function Chatbot() {
     }
   };
 
-  const renderMessageContent = (content) => {
-    const elements = [];
-    const boldRegex = /\*\*(.+?)\*\*/g;
-    let lastIndex = 0;
-    let match;
+  const memoizedMessages = useMemo(() => {
+    const renderMessageContent = (content) => {
+      const elements = [];
+      const boldRegex = /\*\*(.+?)\*\*/g;
+      let lastIndex = 0;
+      let match;
 
-    while ((match = boldRegex.exec(content)) !== null) {
-      const plainText = content.slice(lastIndex, match.index);
-      if (plainText) {
-        elements.push(...plainText.split("\n").flatMap((line, index, array) => [
+      while ((match = boldRegex.exec(content)) !== null) {
+        const plainText = content.slice(lastIndex, match.index);
+        if (plainText) {
+          elements.push(...plainText.split("\n").flatMap((line, index, array) => [
+            line,
+            ...(index < array.length - 1 ? [<br key={`br-${lastIndex}-${index}`} />] : []),
+          ]));
+        }
+        elements.push(
+          <strong key={`bold-${match.index}`}>
+            {match[1]}
+          </strong>
+        );
+        lastIndex = match.index + match[0].length;
+      }
+
+      const remainingText = content.slice(lastIndex);
+      if (remainingText) {
+        elements.push(...remainingText.split("\n").flatMap((line, index, array) => [
           line,
-          ...(index < array.length - 1 ? [<br key={`br-${lastIndex}-${index}`} />] : []),
+          ...(index < array.length - 1 ? [<br key={`br-last-${index}`} />] : []),
         ]));
       }
-      elements.push(
-        <strong key={`bold-${match.index}`}>
-          {match[1]}
-        </strong>
-      );
-      lastIndex = match.index + match[0].length;
-    }
 
-    const remainingText = content.slice(lastIndex);
-    if (remainingText) {
-      elements.push(...remainingText.split("\n").flatMap((line, index, array) => [
-        line,
-        ...(index < array.length - 1 ? [<br key={`br-last-${index}`} />] : []),
-      ]));
-    }
+      return elements.length > 0 ? elements : content;
+    };
 
-    return elements.length > 0 ? elements : content;
-  };
+    return messages.map((message, index) => (
+      <div key={index} className={`chatbot-message chatbot-message-${message.role}`}>
+        <div className="chatbot-message-role">{message.role === "user" ? "Anda" : "AI"}</div>
+        <div className="chatbot-message-content">{renderMessageContent(message.content)}</div>
+      </div>
+    ));
+  }, [messages]);
 
   return (
     <div className="chatbot-floating">
@@ -112,12 +121,8 @@ export default function Chatbot() {
           </div>
 
           <div className="chatbot-messages">
-            {messages.map((message, index) => (
-              <div key={index} className={`chatbot-message chatbot-message-${message.role}`}>
-                <div className="chatbot-message-role">{message.role === "user" ? "Anda" : "AI"}</div>
-                <div className="chatbot-message-content">{renderMessageContent(message.content)}</div>
-              </div>
-            ))}
+            {/* ⚡ Bolt: Memoized messages rendering to prevent O(n) regex processing on every keystroke */}
+            {memoizedMessages}
             <div ref={messagesEndRef} />
           </div>
 
