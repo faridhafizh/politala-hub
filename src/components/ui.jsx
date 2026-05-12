@@ -1,5 +1,6 @@
 "use client";
 import { PRODI } from "@/lib/data"; // still imported for compatibility, but not used directly
+import Link from "next/link"; // Added for routing optimization
 
 /* ──  Icon  ── */
 export const Icon = ({ name, size = 20 }) => {
@@ -119,10 +120,15 @@ export const Badge = ({ children, color = "#1e40af" }) => (
 );
 
 /* ──  Button  ── */
+// ⚡ Bolt: Optimized Button to render Next.js <Link> when `href` is provided.
+// This enables automatic route prefetching, significantly speeding up client-side
+// navigations and improving Core Web Vitals, SEO, and Accessibility compared to
+// using useRouter().push() on a regular button.
 export const Button = ({
   children,
   variant = "primary",
   onClick,
+  href,
   type = "button",
   fullWidth,
   small,
@@ -132,31 +138,63 @@ export const Button = ({
   const baseClass = small ? "btn btn-sm" : "btn";
   const variantClass = `btn-${variant}`;
   const widthClass = fullWidth ? "w-full" : "";
+  const combinedClassName = `${baseClass} ${variantClass} ${widthClass} ${className}`;
+
+  const content = (
+    <span className="btn-content">
+      {children}
+      {icon && <Icon name={icon} size={16} />}
+    </span>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className={combinedClassName} onClick={onClick}>
+        {content}
+      </Link>
+    );
+  }
 
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`${baseClass} ${variantClass} ${widthClass} ${className}`}
+      className={combinedClassName}
     >
-      <span className="btn-content">
-        {children}
-        {icon && <Icon name={icon} size={16} />}
-      </span>
+      {content}
     </button>
   );
 };
 
 /* ──  Card  ── */
-export const Card = ({ children, style = {}, hover = true, onClick, className = "" }) => (
-  <div
-    className={`card ${hover ? "card-hover" : ""} ${className}`}
-    onClick={onClick}
-    style={{ cursor: onClick ? "pointer" : "default", ...style }}
-  >
-    {children}
-  </div>
-);
+// ⚡ Bolt: Optimized Card to render Next.js <Link> when `href` is provided.
+// Similar to Button, using <Link> enables prefetching for faster navigation.
+export const Card = ({ children, style = {}, hover = true, onClick, href, className = "" }) => {
+  const combinedClassName = `card ${hover ? "card-hover" : ""} ${className}`;
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={combinedClassName}
+        onClick={onClick}
+        style={{ cursor: "pointer", ...style, display: "block", textDecoration: "none", color: "inherit" }}
+      >
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className={combinedClassName}
+      onClick={onClick}
+      style={{ cursor: onClick ? "pointer" : "default", ...style }}
+    >
+      {children}
+    </div>
+  );
+};
 
 /* ──  Input (now generic) ── */
 export const Input = ({

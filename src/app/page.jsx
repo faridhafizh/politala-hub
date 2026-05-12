@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { Badge, Button, Card, SectionHeader, Icon } from "@/components/ui";
 import { PRODI, BERITA, TESTIMONI, GALERI_ITEMS, STATS } from "@/lib/data";
 
@@ -42,8 +41,8 @@ const AboutCards = ({ items }) => (
   </div>
 );
 
-const ProgramCard = ({ prodi, onClick }) => (
-  <Card className="prodi-card">
+const ProgramCard = ({ prodi, href }) => (
+  <Card className="prodi-card" href={href}>
     <div className="prodi-card-header">
       <div
         className="prodi-card-icon"
@@ -59,15 +58,15 @@ const ProgramCard = ({ prodi, onClick }) => (
     <p className="prodi-card-desc">{prodi.deskripsi}</p>
     <div className="prodi-card-footer">
       <span className="prodi-card-stats">👨‍🎓 {prodi.students} mahasiswa</span>
-      <button onClick={onClick} className="prodi-card-link">
+      <span className="prodi-card-link">
         Detail <Icon name="chevronRight" size={14} />
-      </button>
+      </span>
     </div>
   </Card>
 );
 
-const NewsCard = ({ berita, onClick }) => (
-  <Card className="news-card" onClick={onClick} hover>
+const NewsCard = ({ berita, href }) => (
+  <Card className="news-card" href={href} hover>
     <div className="news-card-image">{berita.gambar}</div>
     <div className="news-card-body">
       <Badge color="#0891b2">{berita.kategori}</Badge>
@@ -135,8 +134,6 @@ const TestimonialSection = ({ testimonials }) => {
 
 // ── Main Page Component ──
 export default function HomePage() {
-  const router = useRouter();
-
   // Memoized bubbles positions – same across renders
   const bubbles = useMemo(
     () =>
@@ -146,8 +143,6 @@ export default function HomePage() {
       })),
     []
   );
-
-  const navigate = (path) => router.push(path === "home" ? "/" : `/${path}`);
 
   const [galeriFilter, setGaleriFilter] = useState("Semua");
   const filterButtons = ["Semua", "Kampus", "Fasilitas", "Kegiatan"];
@@ -188,10 +183,10 @@ export default function HomePage() {
               dan kelautan.
             </p>
             <div className="hero-actions">
-              <Button onClick={() => navigate("daftar")} icon="arrowRight">
+              <Button href="/daftar" icon="arrowRight">
                 🎓 Daftar Sekarang
               </Button>
-              <Button variant="white" onClick={() => navigate("prodi")}>
+              <Button variant="white" href="/prodi">
                 Lihat Program Studi →
               </Button>
             </div>
@@ -243,7 +238,7 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <Button onClick={() => navigate("about")} icon="arrowRight">
+            <Button href="/about" icon="arrowRight">
               Selengkapnya
             </Button>
           </div>
@@ -264,12 +259,12 @@ export default function HomePage() {
               <ProgramCard
                 key={p.id}
                 prodi={p}
-                onClick={() => navigate("prodi")}
+                href="/prodi"
               />
             ))}
           </div>
           <div className="text-center mt-10">
-            <Button onClick={() => navigate("prodi")} variant="secondary">
+            <Button href="/prodi" variant="secondary">
               Lihat Semua Program Studi
             </Button>
           </div>
@@ -284,7 +279,7 @@ export default function HomePage() {
               <Badge>Berita Terbaru</Badge>
               <h2 className="section-heading">Kabar Terbaru dari Politala</h2>
             </div>
-            <Button onClick={() => navigate("berita")} variant="ghost" small>
+            <Button href="/berita" variant="ghost" small>
               Lihat Semua →
             </Button>
           </div>
@@ -293,7 +288,7 @@ export default function HomePage() {
               <NewsCard
                 key={b.id}
                 berita={b}
-                onClick={() => navigate("berita")}
+                href="/berita"
               />
             ))}
           </div>
@@ -329,7 +324,7 @@ export default function HomePage() {
               ))}
           </div>
           <div className="text-center mt-8">
-            <Button onClick={() => navigate("galeri")} variant="secondary">
+            <Button href="/galeri" variant="secondary">
               Lihat Galeri Lengkap
             </Button>
           </div>
@@ -349,10 +344,10 @@ export default function HomePage() {
             kualitas pendidikan vokasi terbaik di Kalimantan Selatan.
           </p>
           <div className="hero-actions justify-center">
-            <Button onClick={() => navigate("daftar")}>
+            <Button href="/daftar">
               Daftar Sekarang 🎓
             </Button>
-            <Button onClick={() => navigate("kontak")} variant="secondary">
+            <Button href="/kontak" variant="secondary">
               Hubungi Kami
             </Button>
           </div>
