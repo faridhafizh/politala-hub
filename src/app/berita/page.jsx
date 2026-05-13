@@ -1,16 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { SectionHeader, Card, Badge } from "@/components/ui";
 import { BERITA } from "@/lib/data";
 
 export default function BeritaPage() {
-  const router = useRouter();
-
-  const handleBaca = (id) => {
-    // Navigasi ke detail berita (sesuaikan jika ada halaman detail)
-    router.push(`/berita/${id}`);
-  };
-
   return (
     <section className="section">
       <div className="container">
@@ -25,7 +17,7 @@ export default function BeritaPage() {
             <Card
               key={item.id}
               className="news-card"
-              onClick={() => handleBaca(item.id)}
+              href={`/berita/${item.id}`}
               hover
             >
               <div className="news-card-image">{item.gambar}</div>

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { PRODI } from "@/lib/data"; // still imported for compatibility, but not used directly
 
 /* ──  Icon  ── */
@@ -119,6 +120,9 @@ export const Badge = ({ children, color = "#1e40af" }) => (
 );
 
 /* ──  Button  ── */
+// ⚡ Bolt: Added `href` support to seamlessly use Next.js <Link> for prefetching.
+// Using <Link> instead of programmatic useRouter().push() triggers route prefetching,
+// achieving instant page loads and resolving hydration/SEO issues associated with buttons.
 export const Button = ({
   children,
   variant = "primary",
@@ -128,35 +132,63 @@ export const Button = ({
   small,
   icon,
   className = "",
+  href,
 }) => {
   const baseClass = small ? "btn btn-sm" : "btn";
   const variantClass = `btn-${variant}`;
   const widthClass = fullWidth ? "w-full" : "";
+  const combinedClass = `${baseClass} ${variantClass} ${widthClass} ${className}`;
+  const content = (
+    <span className="btn-content">
+      {children}
+      {icon && <Icon name={icon} size={16} />}
+    </span>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className={combinedClass} onClick={onClick}>
+        {content}
+      </Link>
+    );
+  }
 
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`${baseClass} ${variantClass} ${widthClass} ${className}`}
+      className={combinedClass}
     >
-      <span className="btn-content">
-        {children}
-        {icon && <Icon name={icon} size={16} />}
-      </span>
+      {content}
     </button>
   );
 };
 
 /* ──  Card  ── */
-export const Card = ({ children, style = {}, hover = true, onClick, className = "" }) => (
-  <div
-    className={`card ${hover ? "card-hover" : ""} ${className}`}
-    onClick={onClick}
-    style={{ cursor: onClick ? "pointer" : "default", ...style }}
-  >
-    {children}
-  </div>
-);
+// ⚡ Bolt: Added `href` support to cards. Rendering as a Next.js <Link> allows Next
+// to prefetch the route automatically in the background, significantly reducing perceived latency.
+export const Card = ({ children, style = {}, hover = true, onClick, className = "", href }) => {
+  const combinedClass = `card ${hover ? "card-hover" : ""} ${className}`;
+  const mergedStyle = { cursor: onClick || href ? "pointer" : "default", ...style };
+
+  if (href) {
+    return (
+      <Link href={href} className={combinedClass} onClick={onClick} style={mergedStyle}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className={combinedClass}
+      onClick={onClick}
+      style={mergedStyle}
+    >
+      {children}
+    </div>
+  );
+};
 
 /* ──  Input (now generic) ── */
 export const Input = ({

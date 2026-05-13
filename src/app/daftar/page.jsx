@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Input, Button, SectionHeader } from "@/components/ui";
 import { PRODI } from "@/lib/data";
 
 export default function DaftarPage() {
-  const router = useRouter();
   const [form, setForm] = useState({
     nama: "",
     email: "",
