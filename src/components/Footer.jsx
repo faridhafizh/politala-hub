@@ -1,11 +1,9 @@
 "use client";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { PRODI } from "@/lib/data";
 
 export default function Footer() {
-  const router = useRouter();
-  const nav = (path) => router.push(path);
 
   return (
     <footer style={{ background: "#0f172a", color: "#94a3b8", padding: "64px 24px 24px" }}>
@@ -32,18 +30,18 @@ export default function Footer() {
           <div>
             <h4 style={{ color: "#f1f5f9", fontWeight: 700, marginBottom: 16, fontSize: 15 }}>Navigasi</h4>
             {[["/","Beranda"],["/about","Tentang"],["/prodi","Program Studi"],["/berita","Berita"],["/galeri","Galeri"],["/daftar","Pendaftaran"]].map(([path,label]) => (
-              <button key={path} onClick={() => nav(path)} style={{ display: "block", background: "none", border: "none", color: "#64748b", fontSize: 14, cursor: "pointer", padding: "4px 0", fontFamily: "inherit", textAlign: "left" }}
+              <Link key={path} href={path} style={{ display: "block", color: "#64748b", fontSize: 14, textDecoration: "none", padding: "4px 0" }}
                 onMouseEnter={e => e.target.style.color = "#3b82f6"}
-                onMouseLeave={e => e.target.style.color = "#64748b"}>{label}</button>
+                onMouseLeave={e => e.target.style.color = "#64748b"}>{label}</Link>
             ))}
           </div>
 
           <div>
             <h4 style={{ color: "#f1f5f9", fontWeight: 700, marginBottom: 16, fontSize: 15 }}>Program Studi</h4>
             {PRODI.map(p => (
-              <button key={p.id} onClick={() => nav("/prodi")} style={{ display: "block", background: "none", border: "none", color: "#64748b", fontSize: 14, cursor: "pointer", padding: "4px 0", fontFamily: "inherit", textAlign: "left" }}
+              <Link key={p.id} href="/prodi" style={{ display: "block", color: "#64748b", fontSize: 14, textDecoration: "none", padding: "4px 0" }}
                 onMouseEnter={e => e.target.style.color = "#3b82f6"}
-                onMouseLeave={e => e.target.style.color = "#64748b"}>{p.nama}</button>
+                onMouseLeave={e => e.target.style.color = "#64748b"}>{p.nama}</Link>
             ))}
           </div>
 

@@ -1,16 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { SectionHeader, Card, Badge } from "@/components/ui";
 import { PRODI } from "@/lib/data";
 
 export default function ProdiPage() {
-  const router = useRouter();
-
-  const handleDetail = (id) => {
-    // TODO: implementasi detail program studi, misalnya /prodi/[id]
-    router.push(`/prodi/${id}`);
-  };
-
   return (
     <section className="section page-prodi">
       <div className="container">
@@ -22,7 +14,7 @@ export default function ProdiPage() {
 
         <div className="prodi-grid">
           {PRODI.map((prodi) => (
-            <Card key={prodi.id} className="prodi-card">
+            <Card key={prodi.id} className="prodi-card" href={`/prodi/${prodi.id}`}>
               <div className="prodi-card-header">
                 <div
                   className="prodi-card-icon"
@@ -45,12 +37,9 @@ export default function ProdiPage() {
                 <span className="prodi-card-stats">
                   👨‍🎓 {prodi.students} Mahasiswa aktif
                 </span>
-                <button
-                  onClick={() => handleDetail(prodi.id)}
-                  className="prodi-card-link"
-                >
+                <span className="prodi-card-link">
                   Pelajari lebih lanjut →
-                </button>
+                </span>
               </div>
             </Card>
           ))}
