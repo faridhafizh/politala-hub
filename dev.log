@@ -1,0 +1,13 @@
+
+> promo-politala@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 560ms
+
+○ Compiling / ...
+ GET / 200 in 5.2s (next.js: 4.6s, application-code: 601ms)
+ GET / 200 in 121ms (next.js: 6ms, application-code: 116ms)
+ GET /prodi 200 in 667ms (next.js: 629ms, application-code: 37ms)
