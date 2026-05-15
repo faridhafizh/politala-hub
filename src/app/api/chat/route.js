@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { PRODI, BERITA, TESTIMONI, GALERI_ITEMS, STATS } from "@/lib/data";
 
-const MODEL_NAME = process.env.MODEL_NAME;
-const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
-const NVIDIA_BASE_URL = process.env.NVIDIA_BASE_URL;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
+const MODEL_NAME = process.env.MODEL_NAME || "openrouter/auto";
 
 function extractTextFromHtml(html) {
   return html
@@ -53,9 +53,9 @@ function parseAssistantAnswer(data) {
 }
 
 export async function POST(request) {
-  if (!MODEL_NAME || !NVIDIA_API_KEY || !NVIDIA_BASE_URL) {
+  if (!OPENROUTER_API_KEY) {
     return NextResponse.json(
-      { error: "Server belum dikonfigurasi dengan benar. Pastikan env MODEL_NAME, NVIDIA_API_KEY, dan NVIDIA_BASE_URL tersedia." },
+      { error: "Server belum dikonfigurasi dengan benar. Pastikan env OPENROUTER_API_KEY tersedia." },
       { status: 500 }
     );
   }
@@ -97,14 +97,16 @@ Jika pertanyaan menyangkut pendaftaran, jurusan, fasilitas, atau kontak, jawab d
       { role: "user", content: question },
     ],
     temperature: 0.2,
-    max_output_tokens: 900,
+    max_tokens: 900,
   };
 
-  const response = await fetch(NVIDIA_BASE_URL, {
+  const response = await fetch(OPENROUTER_BASE_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${NVIDIA_API_KEY}`,
+      "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+      "HTTP-Referer": "https://politala-hub.vercel.app",
+      "X-Title": "Chatbot Politala",
     },
     body: JSON.stringify(payload),
   });
