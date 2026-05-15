@@ -1,5 +1,4 @@
 "use client";
-import { PRODI } from "@/lib/data"; // still imported for compatibility, but not used directly
 import Link from "next/link"; // Added for routing optimization
 
 /* ──  Icon  ── */

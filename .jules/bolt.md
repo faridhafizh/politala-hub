@@ -9,3 +9,7 @@
 ## 2024-05-12 - Next.js Route Prefetching Optimization
 **Learning:** Using `useRouter().push()` inside interactive elements (like `<button>` or `<div>`) for standard internal navigation prevents Next.js from automatically prefetching route assets. This results in slower client-side transitions and degraded SEO/accessibility compared to standard anchor links.
 **Action:** Always prefer the native Next.js `<Link>` component for internal navigation. When refactoring generic UI components like `Button` or `Card`, conditionally render them as `<Link>` elements if an `href` prop is passed, ensuring to remove any nested semantic elements (like a `<button>` inside the `<Link>`) to avoid HTML validation errors.
+
+## 2026-05-15 - Chatbot External Fetch Caching
+**Learning:** Making repeated synchronous or non-cached external API requests (e.g., fetching large HTML payloads) on every user interaction in an API route creates a massive performance bottleneck, increasing latency and server load.
+**Action:** When fetching relatively static external data within Next.js App Router API routes, always implement `fetch` caching with `next: { revalidate: [seconds] }` to drastically reduce redundant network round-trips.
