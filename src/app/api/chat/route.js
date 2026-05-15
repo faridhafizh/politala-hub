@@ -71,12 +71,13 @@ export async function POST(request) {
     const officialResponse = await fetch("https://www.politala.ac.id", {
       method: "GET",
       headers: { "User-Agent": "Mozilla/5.0 (compatible; PolitalaChatbot/1.0)" },
+      next: { revalidate: 3600 }, // ⚡ Bolt: Cache external fetch to prevent redundant requests on every chatbot query
     });
     if (officialResponse.ok) {
       const html = await officialResponse.text();
       officialText = extractTextFromHtml(html).slice(0, 2500);
     }
-  } catch (error) {
+  } catch {
     officialText = "Gagal mengambil konten resmi. Gunakan informasi internal dan jawaban yang paling handal.";
   }
 
@@ -111,7 +112,7 @@ Jika pertanyaan menyangkut pendaftaran, jurusan, fasilitas, atau kontak, jawab d
   let data;
   try {
     data = await response.json();
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Respons server AI tidak valid." }, { status: 502 });
   }
 
