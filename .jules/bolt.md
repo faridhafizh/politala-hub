@@ -13,3 +13,7 @@
 ## 2026-05-15 - Chatbot External Fetch Caching
 **Learning:** Making repeated synchronous or non-cached external API requests (e.g., fetching large HTML payloads) on every user interaction in an API route creates a massive performance bottleneck, increasing latency and server load.
 **Action:** When fetching relatively static external data within Next.js App Router API routes, always implement `fetch` caching with `next: { revalidate: [seconds] }` to drastically reduce redundant network round-trips.
+
+## 2026-05-16 - State Colocation to Prevent Massive Re-renders
+**Learning:** Placing localized interactive state (e.g., a simple gallery filter `useState`) at the very top level of a large, complex page component (like `HomePage`) causes the entire page and all its deeply nested sub-components to re-render on every state change.
+**Action:** Always colocate state as close to where it is used as possible by extracting localized UI sections into smaller, dedicated components. This isolates the render cycle to only the components that actually need to change, significantly improving client-side performance.
