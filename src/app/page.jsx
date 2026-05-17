@@ -1,7 +1,13 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Badge, Button, Card, SectionHeader, Icon } from "@/components/ui";
 import { PRODI, BERITA, TESTIMONI, GALERI_ITEMS, STATS } from "@/lib/data";
+
+// ⚡ Bolt: Moved static bubbles array outside the component to bypass React hook evaluations
+const HERO_BUBBLES = Array.from({ length: 20 }, (_, i) => ({
+  left: `${(i * 11) % 100}%`,
+  top: `${(i * 7) % 100}%`,
+}));
 
 // ── Reusable sub‑components ──
 const HeroStats = ({ stats }) => (
@@ -132,21 +138,51 @@ const TestimonialSection = ({ testimonials }) => {
   );
 };
 
-// ── Main Page Component ──
-export default function HomePage() {
-  // Memoized bubbles positions – same across renders
-  const bubbles = useMemo(
-    () =>
-      Array.from({ length: 20 }, (_, i) => ({
-        left: `${(i * 11) % 100}%`,
-        top: `${(i * 7) % 100}%`,
-      })),
-    []
-  );
-
+// ⚡ Bolt: Extracted GallerySection to colocate state and prevent full-page re-renders on filter change
+const GallerySection = () => {
   const [galeriFilter, setGaleriFilter] = useState("Semua");
   const filterButtons = ["Semua", "Kampus", "Fasilitas", "Kegiatan"];
 
+  return (
+    <section className="section bg-white">
+      <div className="container">
+        <SectionHeader
+          badge="Galeri"
+          title="Kehidupan Kampus Politala"
+          subtitle="Sekilas momen berharga dari kegiatan akademik dan non-akademik di lingkungan kampus kami."
+        />
+        <div className="gallery-filters">
+          {filterButtons.map((f) => (
+            <button
+              key={f}
+              onClick={() => setGaleriFilter(f)}
+              className={`filter-button ${galeriFilter === f ? "active" : ""}`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+        <div className="gallery-grid">
+          {GALERI_ITEMS.filter(
+            (g) => galeriFilter === "Semua" || g.kategori === galeriFilter
+          )
+            .slice(0, 6)
+            .map((g) => (
+              <GalleryItem key={g.id} item={g} />
+            ))}
+        </div>
+        <div className="text-center mt-8">
+          <Button href="/galeri" variant="secondary">
+            Lihat Galeri Lengkap
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ── Main Page Component ──
+export default function HomePage() {
   const aboutItems = [
     { icon: "🏛️", title: "Kampus Modern", desc: "Fasilitas gedung dan ruang belajar berstandar nasional" },
     { icon: "🔬", title: "Lab Lengkap", desc: "Laboratorium dengan peralatan terkini sesuai industri" },
@@ -161,7 +197,7 @@ export default function HomePage() {
         <div className="hero-bg">
           <div className="hero-gradient-1" />
           <div className="hero-gradient-2" />
-          {bubbles.map((pos, i) => (
+          {HERO_BUBBLES.map((pos, i) => (
             <div key={i} className="hero-bubble" style={pos} />
           ))}
         </div>
@@ -296,40 +332,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Galeri ── */}
-      <section className="section bg-white">
-        <div className="container">
-          <SectionHeader
-            badge="Galeri"
-            title="Kehidupan Kampus Politala"
-            subtitle="Sekilas momen berharga dari kegiatan akademik dan non-akademik di lingkungan kampus kami."
-          />
-          <div className="gallery-filters">
-            {filterButtons.map((f) => (
-              <button
-                key={f}
-                onClick={() => setGaleriFilter(f)}
-                className={`filter-button ${galeriFilter === f ? "active" : ""}`}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-          <div className="gallery-grid">
-            {GALERI_ITEMS.filter(
-              (g) => galeriFilter === "Semua" || g.kategori === galeriFilter
-            )
-              .slice(0, 6)
-              .map((g) => (
-                <GalleryItem key={g.id} item={g} />
-              ))}
-          </div>
-          <div className="text-center mt-8">
-            <Button href="/galeri" variant="secondary">
-              Lihat Galeri Lengkap
-            </Button>
-          </div>
-        </div>
-      </section>
+      <GallerySection />
 
       {/* ── Testimoni ── */}
       <TestimonialSection testimonials={TESTIMONI} />
