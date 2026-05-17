@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Badge, Button, Card, SectionHeader, Icon } from "@/components/ui";
 import { PRODI, BERITA, TESTIMONI, GALERI_ITEMS, STATS } from "@/lib/data";
 
@@ -132,27 +132,25 @@ const TestimonialSection = ({ testimonials }) => {
   );
 };
 
+// ⚡ Bolt: Define static data completely outside the React component scope
+// instead of using useMemo inside the render body to bypass React hook evaluations entirely.
+const STATIC_BUBBLES = Array.from({ length: 20 }, (_, i) => ({
+  left: `${(i * 11) % 100}%`,
+  top: `${(i * 7) % 100}%`,
+}));
+
+const STATIC_FILTER_BUTTONS = ["Semua", "Kampus", "Fasilitas", "Kegiatan"];
+
+const STATIC_ABOUT_ITEMS = [
+  { icon: "🏛️", title: "Kampus Modern", desc: "Fasilitas gedung dan ruang belajar berstandar nasional" },
+  { icon: "🔬", title: "Lab Lengkap", desc: "Laboratorium dengan peralatan terkini sesuai industri" },
+  { icon: "👨‍🏫", title: "Dosen Ahli", desc: "Pengajar berpengalaman dari akademisi dan praktisi" },
+  { icon: "🤝", title: "Mitra Industri", desc: "Jaringan luas dengan perusahaan nasional & multinasional" },
+];
+
 // ── Main Page Component ──
 export default function HomePage() {
-  // Memoized bubbles positions – same across renders
-  const bubbles = useMemo(
-    () =>
-      Array.from({ length: 20 }, (_, i) => ({
-        left: `${(i * 11) % 100}%`,
-        top: `${(i * 7) % 100}%`,
-      })),
-    []
-  );
-
   const [galeriFilter, setGaleriFilter] = useState("Semua");
-  const filterButtons = ["Semua", "Kampus", "Fasilitas", "Kegiatan"];
-
-  const aboutItems = [
-    { icon: "🏛️", title: "Kampus Modern", desc: "Fasilitas gedung dan ruang belajar berstandar nasional" },
-    { icon: "🔬", title: "Lab Lengkap", desc: "Laboratorium dengan peralatan terkini sesuai industri" },
-    { icon: "👨‍🏫", title: "Dosen Ahli", desc: "Pengajar berpengalaman dari akademisi dan praktisi" },
-    { icon: "🤝", title: "Mitra Industri", desc: "Jaringan luas dengan perusahaan nasional & multinasional" },
-  ];
 
   return (
     <div className="home-page">
@@ -161,7 +159,7 @@ export default function HomePage() {
         <div className="hero-bg">
           <div className="hero-gradient-1" />
           <div className="hero-gradient-2" />
-          {bubbles.map((pos, i) => (
+          {STATIC_BUBBLES.map((pos, i) => (
             <div key={i} className="hero-bubble" style={pos} />
           ))}
         </div>
@@ -242,7 +240,7 @@ export default function HomePage() {
               Selengkapnya
             </Button>
           </div>
-          <AboutCards items={aboutItems} />
+          <AboutCards items={STATIC_ABOUT_ITEMS} />
         </div>
       </section>
 
@@ -304,7 +302,7 @@ export default function HomePage() {
             subtitle="Sekilas momen berharga dari kegiatan akademik dan non-akademik di lingkungan kampus kami."
           />
           <div className="gallery-filters">
-            {filterButtons.map((f) => (
+            {STATIC_FILTER_BUTTONS.map((f) => (
               <button
                 key={f}
                 onClick={() => setGaleriFilter(f)}
